@@ -516,7 +516,7 @@ export default function QRBuilder() {
             className={opts.animation !== "none" ? `qr-anim-${opts.animation} qr-speed-${opts.animSpeed} qr-intensity-${opts.animIntensity}` : undefined}
             style={{
               ...styles.qrWrap,
-              background: generated ? opts.bgColor : "#f0ede6",
+              background: generated ? opts.bgColor : "#dedad2",
               color: opts.fgColor,
             }}
           >
@@ -556,8 +556,8 @@ export default function QRBuilder() {
 
       <footer style={styles.footer}>
         <span>© {new Date().getFullYear()} QRCUSTO</span>
-        <span style={{ color: "#ccc" }}>—</span>
-        <span style={{ color: "#bbb" }}>FREE. NO TRACKING. NO ADS.</span>
+        <span style={{ color: "#aaa" }}>—</span>
+        <span style={{ color: "#888" }}>FREE. NO TRACKING. NO ADS.</span>
       </footer>
     </div>
   );
@@ -574,30 +574,32 @@ const styles: Record<string, React.CSSProperties> = {
   },
   header: {
     paddingTop: 40,
-    paddingBottom: 32,
+    paddingBottom: 24,
   },
   logoBlock: {
     display: "flex",
     alignItems: "baseline",
     gap: 16,
-    marginBottom: 24,
+    marginBottom: 20,
   },
   logo: {
     fontFamily: "'Bebas Neue', sans-serif",
-    fontSize: 52,
+    fontSize: 56,
     letterSpacing: "0.04em",
     color: "#1a1a1a",
     lineHeight: 1,
+    borderLeft: "5px solid #1a1a1a",
+    paddingLeft: 12,
   },
   tagline: {
     fontFamily: "'IBM Plex Mono', monospace",
-    fontSize: 12,
-    color: "#999",
-    letterSpacing: "0.08em",
+    fontSize: 13,
+    color: "#666",
+    letterSpacing: "0.06em",
   },
   headerRule: {
-    height: 1,
-    background: "#e0ddd6",
+    height: 3,
+    background: "#1a1a1a",
   },
   main: {
     flex: 1,
@@ -610,7 +612,9 @@ const styles: Record<string, React.CSSProperties> = {
   panel: {
     display: "flex",
     flexDirection: "column",
-    gap: 32,
+    gap: 28,
+    border: "3px solid #1a1a1a",
+    padding: 28,
   },
   section: {
     display: "flex",
@@ -618,35 +622,37 @@ const styles: Record<string, React.CSSProperties> = {
   },
   inputRow: {
     display: "flex",
-    gap: 8,
+    gap: 0,
   },
   logoRow: {
     display: "flex",
-    gap: 8,
+    gap: 0,
   },
   chipGrid: {
     display: "flex",
     flexWrap: "wrap",
-    gap: 8,
+    gap: 6,
   },
   chip: {
     background: "transparent",
-    border: "1px solid #d8d4cc",
-    color: "#888",
-    padding: "7px 14px",
+    border: "2px solid #aaa",
+    color: "#666",
+    padding: "8px 14px",
     fontSize: 11,
+    fontWeight: 500,
     letterSpacing: "0.06em",
   },
   chipActive: {
-    border: "1px solid #1a1a1a",
-    color: "#1a1a1a",
-    background: "rgba(0,0,0,0.04)",
+    border: "2px solid #1a1a1a",
+    color: "#fff",
+    background: "#1a1a1a",
   },
   presetBtn: {
-    padding: "7px 14px",
+    padding: "8px 14px",
     fontSize: 11,
     letterSpacing: "0.06em",
     fontFamily: "'IBM Plex Mono', monospace",
+    fontWeight: 500,
   },
   colorRow: {
     display: "flex",
@@ -660,44 +666,48 @@ const styles: Record<string, React.CSSProperties> = {
   colorLabel: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 11,
-    color: "#999",
+    color: "#666",
     letterSpacing: "0.1em",
+    fontWeight: 500,
   },
   colorPicker: {
     width: 32,
     height: 32,
-    border: "1px solid #d8d4cc",
+    border: "2px solid #1a1a1a",
     background: "none",
     cursor: "pointer",
     padding: 2,
   },
   colorHex: {
     fontSize: 12,
-    color: "#999",
+    color: "#888",
+    fontFamily: "'IBM Plex Mono', monospace",
   },
   preview: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: 16,
+    gap: 0,
     position: "sticky",
     top: 40,
     alignSelf: "flex-start",
+    border: "3px solid #1a1a1a",
   },
   qrWrap: {
-    width: 300,
-    height: 300,
+    width: 340,
+    height: 340,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     transition: "background 0.2s",
+    padding: 20,
   },
   placeholder: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     gap: 8,
-    border: "1px dashed #d8d4cc",
+    border: "2px dashed #aaa",
     width: "100%",
     height: "100%",
     justifyContent: "center",
@@ -705,28 +715,28 @@ const styles: Record<string, React.CSSProperties> = {
   placeholderText: {
     fontFamily: "'Bebas Neue', sans-serif",
     fontSize: 36,
-    color: "#d8d4cc",
+    color: "#bbb",
     letterSpacing: "0.1em",
   },
   placeholderSub: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 11,
-    color: "#bbb",
+    color: "#aaa",
     letterSpacing: "0.06em",
   },
   shortUrlBox: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    width: 300,
-    border: "1px solid #d8d4cc",
-    padding: "10px 12px",
+    width: "100%",
+    borderTop: "3px solid #1a1a1a",
+    padding: "12px 16px",
     gap: 8,
   },
   shortUrlText: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 11,
-    color: "#888",
+    color: "#666",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
@@ -734,37 +744,43 @@ const styles: Record<string, React.CSSProperties> = {
   },
   downloadRow: {
     display: "flex",
-    gap: 8,
-    width: 300,
+    gap: 0,
+    width: "100%",
+    borderTop: "3px solid #1a1a1a",
   },
   btnPrimary: {
     background: "#1a1a1a",
-    color: "#fafaf8",
+    color: "#e8e4de",
     border: "none",
-    padding: "12px 20px",
+    padding: "14px 20px",
     fontWeight: 500,
     flex: 1,
+    fontSize: 12,
   },
   btnGhost: {
     background: "transparent",
-    border: "1px solid #d8d4cc",
-    color: "#888",
-    padding: "12px 20px",
+    border: "none",
+    borderLeft: "3px solid #1a1a1a",
+    color: "#666",
+    padding: "14px 20px",
+    fontWeight: 500,
+    fontSize: 12,
   },
   error: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 11,
     color: "#d93025",
     marginTop: 8,
+    fontWeight: 500,
   },
   footer: {
     display: "flex",
     gap: 16,
     padding: "24px 0",
-    borderTop: "1px solid #e0ddd6",
+    borderTop: "3px solid #1a1a1a",
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 11,
-    color: "#bbb",
+    color: "#888",
     letterSpacing: "0.06em",
   },
 };
