@@ -38,11 +38,11 @@ const ANIMATIONS: { label: string; value: AnimationType }[] = [
 ];
 
 const PRESETS = [
-  { label: "Ink", fg: "#0a0a0a", bg: "#f0ece4" },
-  { label: "Void", fg: "#c8ff00", bg: "#080808" },
-  { label: "Ghost", fg: "#ffffff", bg: "#111111" },
-  { label: "Bone", fg: "#1a1a1a", bg: "#e8e0d0" },
-  { label: "Neon", fg: "#00ffcc", bg: "#0a0a1a" },
+  { label: "Ink", fg: "#1a1a1a", bg: "#fafaf8" },
+  { label: "Midnight", fg: "#fafaf8", bg: "#1a1a1a" },
+  { label: "Ocean", fg: "#0066cc", bg: "#f0f4f8" },
+  { label: "Berry", fg: "#8b1a4a", bg: "#fdf2f5" },
+  { label: "Forest", fg: "#1a5c2a", bg: "#f0f5f1" },
 ];
 
 export default function QRBuilder() {
@@ -63,8 +63,8 @@ export default function QRBuilder() {
   const [opts, setOpts] = useState<QROptions>({
     dotType: "rounded",
     cornerType: "extra-rounded",
-    fgColor: "#c8ff00",
-    bgColor: "#080808",
+    fgColor: "#1a1a1a",
+    bgColor: "#fafaf8",
     logoUrl: "",
     animation: "none",
   });
@@ -242,8 +242,8 @@ export default function QRBuilder() {
             <label>Destination URL</label>
             <div style={styles.inputRow}>
               <input
-                type="url"
-                placeholder="https://your-link.com"
+                type="text"
+                placeholder="your-link.com"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
@@ -421,7 +421,7 @@ export default function QRBuilder() {
             className={opts.animation !== "none" ? `qr-anim-${opts.animation}` : undefined}
             style={{
               ...styles.qrWrap,
-              background: generated ? opts.bgColor : "#111",
+              background: generated ? opts.bgColor : "#f0ede6",
               color: opts.fgColor,
             }}
           >
@@ -461,8 +461,8 @@ export default function QRBuilder() {
 
       <footer style={styles.footer}>
         <span>© {new Date().getFullYear()} QRCUSTO</span>
-        <span style={{ color: "#333" }}>—</span>
-        <span style={{ color: "#444" }}>FREE. NO TRACKING. NO ADS.</span>
+        <span style={{ color: "#ccc" }}>—</span>
+        <span style={{ color: "#bbb" }}>FREE. NO TRACKING. NO ADS.</span>
       </footer>
     </div>
   );
@@ -491,18 +491,18 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "'Bebas Neue', sans-serif",
     fontSize: 52,
     letterSpacing: "0.04em",
-    color: "#f0ece4",
+    color: "#1a1a1a",
     lineHeight: 1,
   },
   tagline: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 12,
-    color: "#555",
+    color: "#999",
     letterSpacing: "0.08em",
   },
   headerRule: {
     height: 1,
-    background: "#1e1e1e",
+    background: "#e0ddd6",
   },
   main: {
     flex: 1,
@@ -536,16 +536,16 @@ const styles: Record<string, React.CSSProperties> = {
   },
   chip: {
     background: "transparent",
-    border: "1px solid #222",
+    border: "1px solid #d8d4cc",
     color: "#888",
     padding: "7px 14px",
     fontSize: 11,
     letterSpacing: "0.06em",
   },
   chipActive: {
-    border: "1px solid #c8ff00",
-    color: "#c8ff00",
-    background: "rgba(200,255,0,0.06)",
+    border: "1px solid #1a1a1a",
+    color: "#1a1a1a",
+    background: "rgba(0,0,0,0.04)",
   },
   presetBtn: {
     padding: "7px 14px",
@@ -565,20 +565,20 @@ const styles: Record<string, React.CSSProperties> = {
   colorLabel: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 11,
-    color: "#555",
+    color: "#999",
     letterSpacing: "0.1em",
   },
   colorPicker: {
     width: 32,
     height: 32,
-    border: "1px solid #222",
+    border: "1px solid #d8d4cc",
     background: "none",
     cursor: "pointer",
     padding: 2,
   },
   colorHex: {
     fontSize: 12,
-    color: "#666",
+    color: "#999",
   },
   preview: {
     display: "flex",
@@ -602,7 +602,7 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: "column",
     alignItems: "center",
     gap: 8,
-    border: "1px dashed #222",
+    border: "1px dashed #d8d4cc",
     width: "100%",
     height: "100%",
     justifyContent: "center",
@@ -610,13 +610,13 @@ const styles: Record<string, React.CSSProperties> = {
   placeholderText: {
     fontFamily: "'Bebas Neue', sans-serif",
     fontSize: 36,
-    color: "#222",
+    color: "#d8d4cc",
     letterSpacing: "0.1em",
   },
   placeholderSub: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 11,
-    color: "#333",
+    color: "#bbb",
     letterSpacing: "0.06em",
   },
   shortUrlBox: {
@@ -624,7 +624,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "space-between",
     width: 300,
-    border: "1px solid #1e1e1e",
+    border: "1px solid #d8d4cc",
     padding: "10px 12px",
     gap: 8,
   },
@@ -643,8 +643,8 @@ const styles: Record<string, React.CSSProperties> = {
     width: 300,
   },
   btnPrimary: {
-    background: "#c8ff00",
-    color: "#080808",
+    background: "#1a1a1a",
+    color: "#fafaf8",
     border: "none",
     padding: "12px 20px",
     fontWeight: 500,
@@ -652,24 +652,24 @@ const styles: Record<string, React.CSSProperties> = {
   },
   btnGhost: {
     background: "transparent",
-    border: "1px solid #222",
+    border: "1px solid #d8d4cc",
     color: "#888",
     padding: "12px 20px",
   },
   error: {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 11,
-    color: "#ff4444",
+    color: "#d93025",
     marginTop: 8,
   },
   footer: {
     display: "flex",
     gap: 16,
     padding: "24px 0",
-    borderTop: "1px solid #1a1a1a",
+    borderTop: "1px solid #e0ddd6",
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 11,
-    color: "#333",
+    color: "#bbb",
     letterSpacing: "0.06em",
   },
 };

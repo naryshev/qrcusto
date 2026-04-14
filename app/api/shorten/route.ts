@@ -16,8 +16,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
   }
 
+  // Auto-prepend https:// if no protocol
+  let normalizedUrl = url.trim();
+  if (!/^https?:\/\//i.test(normalizedUrl)) {
+    normalizedUrl = `https://${normalizedUrl}`;
+  }
+
   try {
-    new URL(url);
+    new URL(normalizedUrl);
   } catch {
     return NextResponse.json({ error: "Malformed URL" }, { status: 400 });
   }
@@ -37,7 +43,7 @@ export async function POST(req: NextRequest) {
     attempts++;
   }
 
-  const { error } = await supabase.from("links").insert({ slug, url });
+  const { error } = await supabase.from("links").insert({ slug, url: normalizedUrl });
 
   if (error) {
     return NextResponse.json({ error: "DB error" }, { status: 500 });

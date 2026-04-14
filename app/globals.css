@@ -1,14 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap");
 
 :root {
-  --bg: #080808;
-  --surface: #111111;
-  --border: #222222;
-  --text: #f0ece4;
-  --muted: #555555;
-  --accent: #c8ff00;
-  --accent-dim: rgba(200, 255, 0, 0.08);
-  --danger: #ff4444;
+  --bg: #fafaf8;
+  --surface: #f0ede6;
+  --border: #d8d4cc;
+  --text: #1a1a1a;
+  --muted: #888888;
+  --accent: #1a1a1a;
+  --accent-dim: rgba(0, 0, 0, 0.04);
+  --danger: #d93025;
 }
 
 * {
