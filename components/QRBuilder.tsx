@@ -127,7 +127,6 @@ export default function QRBuilder() {
       setShortUrl(data.shortUrl);
       setSlug(data.slug);
       setGenerated(true);
-      await renderQR(data.shortUrl);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {
