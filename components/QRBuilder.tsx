@@ -574,13 +574,14 @@ const styles: Record<string, React.CSSProperties> = {
   },
   header: {
     paddingTop: 40,
-    paddingBottom: 24,
+    paddingBottom: 12,
   },
   logoBlock: {
     display: "flex",
     alignItems: "baseline",
     gap: 16,
-    marginBottom: 20,
+    marginBottom: 12,
+    flexWrap: "nowrap",
   },
   logo: {
     fontFamily: "'Bebas Neue', sans-serif",
@@ -596,6 +597,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 13,
     color: "#666",
     letterSpacing: "0.06em",
+    whiteSpace: "nowrap",
   },
   headerRule: {
     height: 3,
