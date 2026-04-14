@@ -49,6 +49,8 @@ export default function QRBuilder() {
   const [copied, setCopied] = useState(false);
   const [generated, setGenerated] = useState(false);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [opts, setOpts] = useState<QROptions>({
     dotType: "rounded",
     cornerType: "extra-rounded",
@@ -153,6 +155,16 @@ export default function QRBuilder() {
     setOpts((o) => ({ ...o, fgColor: fg, bgColor: bg }));
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setOpts((o) => ({ ...o, logoUrl: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div style={styles.container}>
       {/* Header */}
@@ -164,7 +176,7 @@ export default function QRBuilder() {
         <div style={styles.headerRule} />
       </header>
 
-      <main style={styles.main}>
+      <main className="qr-main" style={styles.main}>
         {/* Left — Controls */}
         <div style={styles.panel}>
           {/* URL Input */}
@@ -285,20 +297,49 @@ export default function QRBuilder() {
             </div>
           </section>
 
-          {/* Logo URL */}
+          {/* Logo */}
           <section style={styles.section}>
-            <label>Logo URL (optional)</label>
-            <input
-              type="text"
-              placeholder="https://example.com/logo.png"
-              value={opts.logoUrl}
-              onChange={(e) => setOpts((o) => ({ ...o, logoUrl: e.target.value }))}
-            />
+            <label>Logo (optional)</label>
+            <div style={styles.logoRow}>
+              <input
+                type="text"
+                placeholder="https://example.com/logo.png"
+                value={opts.logoUrl.startsWith("data:") ? "" : opts.logoUrl}
+                onChange={(e) => setOpts((o) => ({ ...o, logoUrl: e.target.value }))}
+                style={{ flex: 1 }}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                style={styles.btnGhost}
+              >
+                UPLOAD
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                style={{ display: "none" }}
+              />
+            </div>
+            {opts.logoUrl && (
+              <button
+                type="button"
+                onClick={() => {
+                  setOpts((o) => ({ ...o, logoUrl: "" }));
+                  if (fileInputRef.current) fileInputRef.current.value = "";
+                }}
+                style={{ ...styles.btnGhost, marginTop: 8, padding: "6px 12px", fontSize: 10 }}
+              >
+                CLEAR LOGO
+              </button>
+            )}
           </section>
         </div>
 
         {/* Right — Preview */}
-        <div style={styles.preview}>
+        <div className="qr-preview" style={styles.preview}>
           <div
             style={{
               ...styles.qrWrap,
@@ -402,6 +443,10 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: "column",
   },
   inputRow: {
+    display: "flex",
+    gap: 8,
+  },
+  logoRow: {
     display: "flex",
     gap: 8,
   },

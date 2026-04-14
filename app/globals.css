@@ -70,3 +70,18 @@ label {
   display: block;
   margin-bottom: 8px;
 }
+
+/* Mobile-first responsive layout */
+@media (max-width: 768px) {
+  .qr-main {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    gap: 32px !important;
+  }
+
+  .qr-preview {
+    position: static !important;
+    width: 100% !important;
+    align-items: center !important;
+  }
+}
