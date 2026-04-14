@@ -71,6 +71,55 @@ label {
   margin-bottom: 8px;
 }
 
+/* QR Animations */
+@keyframes qr-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@keyframes qr-scan-line {
+  0% { top: 0; }
+  100% { top: calc(100% - 2px); }
+}
+
+@keyframes qr-glitch {
+  0%, 84%, 90%, 100% { transform: translate(0); filter: none; }
+  85% { transform: translate(-3px, 1px) skewX(0.5deg); filter: hue-rotate(90deg); }
+  86% { transform: translate(3px, -1px); filter: hue-rotate(-90deg); }
+  87% { transform: translate(-1px, 2px) skewX(-0.3deg); }
+  88% { transform: translate(0); filter: none; }
+  91% { transform: translate(2px, -2px); filter: hue-rotate(45deg) brightness(1.1); }
+  92% { transform: translate(-2px, 1px) skewX(0.2deg); }
+  93% { transform: translate(0); filter: none; }
+}
+
+.qr-anim-pulse {
+  animation: qr-pulse 2.5s ease-in-out infinite;
+}
+
+.qr-anim-scan {
+  position: relative;
+  overflow: hidden;
+}
+
+.qr-anim-scan::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.5;
+  box-shadow: 0 0 8px currentColor;
+  animation: qr-scan-line 2s linear infinite;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.qr-anim-glitch {
+  animation: qr-glitch 5s ease-in-out infinite;
+}
+
 /* Mobile-first responsive layout */
 @media (max-width: 768px) {
   .qr-main {

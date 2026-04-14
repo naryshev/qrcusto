@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 type DotType = "rounded" | "dots" | "classy" | "classy-rounded" | "square" | "extra-rounded";
 type CornerType = "square" | "extra-rounded" | "dot";
+type AnimationType = "none" | "pulse" | "scan" | "glitch";
 
 interface QROptions {
   dotType: DotType;
@@ -11,6 +12,7 @@ interface QROptions {
   fgColor: string;
   bgColor: string;
   logoUrl: string;
+  animation: AnimationType;
 }
 
 const DOT_STYLES: { label: string; value: DotType }[] = [
@@ -26,6 +28,13 @@ const CORNER_STYLES: { label: string; value: CornerType }[] = [
   { label: "Square", value: "square" },
   { label: "Rounded", value: "extra-rounded" },
   { label: "Dot", value: "dot" },
+];
+
+const ANIMATIONS: { label: string; value: AnimationType }[] = [
+  { label: "None", value: "none" },
+  { label: "Pulse", value: "pulse" },
+  { label: "Scan", value: "scan" },
+  { label: "Glitch", value: "glitch" },
 ];
 
 const PRESETS = [
@@ -57,6 +66,7 @@ export default function QRBuilder() {
     fgColor: "#c8ff00",
     bgColor: "#080808",
     logoUrl: "",
+    animation: "none",
   });
 
   // Build qr-code-styling options
@@ -140,8 +150,57 @@ export default function QRBuilder() {
   };
 
   const handleDownloadSVG = async () => {
-    if (!qrInstance.current) return;
-    await qrInstance.current.download({ name: `qr-${slug}`, extension: "svg" });
+    if (opts.animation !== "none") {
+      const svgEl = qrRef.current?.querySelector("svg");
+      if (!svgEl) return;
+
+      const clone = svgEl.cloneNode(true) as SVGSVGElement;
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      while (clone.childNodes.length > 0) g.appendChild(clone.childNodes[0]);
+      clone.appendChild(g);
+
+      let css = "";
+      switch (opts.animation) {
+        case "pulse":
+          css = `@keyframes p{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}g{animation:p 2.5s ease-in-out infinite;transform-origin:50% 50%;}`;
+          break;
+        case "scan": {
+          css = `@keyframes s{0%{transform:translateY(-3px)}100%{transform:translateY(300px)}}line.scan{animation:s 2s linear infinite;}`;
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("class", "scan");
+          line.setAttribute("x1", "0");
+          line.setAttribute("y1", "0");
+          line.setAttribute("x2", "300");
+          line.setAttribute("y2", "0");
+          line.setAttribute("stroke", opts.fgColor);
+          line.setAttribute("stroke-width", "2");
+          line.setAttribute("opacity", "0.5");
+          clone.appendChild(line);
+          break;
+        }
+        case "glitch":
+          css = `@keyframes gl{0%,84%,90%,100%{transform:translate(0)}85%{transform:translate(-3px,1px) skewX(0.5deg)}86%{transform:translate(3px,-1px)}87%{transform:translate(-1px,2px)}88%{transform:translate(0)}}g{animation:gl 5s ease-in-out infinite;transform-origin:50% 50%;}`;
+          break;
+      }
+
+      if (css) {
+        const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
+        style.textContent = css;
+        clone.insertBefore(style, clone.firstChild);
+      }
+
+      const blob = new Blob([new XMLSerializer().serializeToString(clone)], {
+        type: "image/svg+xml",
+      });
+      const urlObj = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.download = `qr-${slug}-animated.svg`;
+      a.href = urlObj;
+      a.click();
+      URL.revokeObjectURL(urlObj);
+    } else if (qrInstance.current) {
+      await qrInstance.current.download({ name: `qr-${slug}`, extension: "svg" });
+    }
   };
 
   const handleCopy = async () => {
@@ -335,14 +394,35 @@ export default function QRBuilder() {
               </button>
             )}
           </section>
+
+          {/* Animation */}
+          <section style={styles.section}>
+            <label>Animation</label>
+            <div style={styles.chipGrid}>
+              {ANIMATIONS.map((a) => (
+                <button
+                  key={a.value}
+                  onClick={() => setOpts((o) => ({ ...o, animation: a.value }))}
+                  style={{
+                    ...styles.chip,
+                    ...(opts.animation === a.value ? styles.chipActive : {}),
+                  }}
+                >
+                  {a.label}
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
 
         {/* Right — Preview */}
         <div className="qr-preview" style={styles.preview}>
           <div
+            className={opts.animation !== "none" ? `qr-anim-${opts.animation}` : undefined}
             style={{
               ...styles.qrWrap,
               background: generated ? opts.bgColor : "#111",
+              color: opts.fgColor,
             }}
           >
             {!generated && (
@@ -371,7 +451,7 @@ export default function QRBuilder() {
                   ↓ PNG
                 </button>
                 <button onClick={handleDownloadSVG} style={styles.btnGhost}>
-                  ↓ SVG
+                  ↓ {opts.animation !== "none" ? "ANIM" : "SVG"}
                 </button>
               </div>
             </>
