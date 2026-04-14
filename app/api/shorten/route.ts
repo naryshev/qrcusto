@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 function generateSlug(length = 6): string {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -10,6 +10,7 @@ function generateSlug(length = 6): string {
 
 export async function POST(req: NextRequest) {
   const { url } = await req.json();
+  const supabase = getSupabase();
 
   if (!url || typeof url !== "string") {
     return NextResponse.json({ error: "Invalid URL" }, { status: 400 });

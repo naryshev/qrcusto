@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   const { slug } = params;
+  const supabase = getSupabase();
 
   const { data, error } = await supabase
     .from("links")
-    .select("url")
+    .select("url, clicks")
     .eq("slug", slug)
     .single();
 
