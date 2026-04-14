@@ -71,54 +71,122 @@ label {
   margin-bottom: 8px;
 }
 
-/* QR Animations */
-@keyframes qr-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.04); }
-}
+/* QR Animations — speed/intensity via CSS custom properties */
+/* Speed multipliers */
+.qr-speed-slow { --qr-speed: 2; }
+.qr-speed-normal { --qr-speed: 1; }
+.qr-speed-fast { --qr-speed: 0.5; }
 
-@keyframes qr-scan-line {
-  0% { top: 0; }
-  100% { top: calc(100% - 2px); }
-}
+/* Intensity multipliers */
+.qr-intensity-subtle { --qr-int: 0.5; }
+.qr-intensity-normal { --qr-int: 1; }
+.qr-intensity-strong { --qr-int: 1.8; }
 
-@keyframes qr-glitch {
-  0%, 84%, 90%, 100% { transform: translate(0); filter: none; }
-  85% { transform: translate(-3px, 1px) skewX(0.5deg); filter: hue-rotate(90deg); }
-  86% { transform: translate(3px, -1px); filter: hue-rotate(-90deg); }
-  87% { transform: translate(-1px, 2px) skewX(-0.3deg); }
-  88% { transform: translate(0); filter: none; }
-  91% { transform: translate(2px, -2px); filter: hue-rotate(45deg) brightness(1.1); }
-  92% { transform: translate(-2px, 1px) skewX(0.2deg); }
-  93% { transform: translate(0); filter: none; }
-}
+/* --- Pulse --- */
+.qr-anim-pulse.qr-intensity-subtle { animation: qr-pulse-s 2.5s ease-in-out infinite; }
+.qr-anim-pulse.qr-intensity-normal { animation: qr-pulse-n 2.5s ease-in-out infinite; }
+.qr-anim-pulse.qr-intensity-strong { animation: qr-pulse-x 2.5s ease-in-out infinite; }
+@keyframes qr-pulse-s { 0%,100%{transform:scale(1)} 50%{transform:scale(1.02)} }
+@keyframes qr-pulse-n { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+@keyframes qr-pulse-x { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
 
-.qr-anim-pulse {
-  animation: qr-pulse 2.5s ease-in-out infinite;
-}
+/* --- Bounce --- */
+.qr-anim-bounce.qr-intensity-subtle { animation: qr-bounce-s 1.2s ease-in-out infinite; }
+.qr-anim-bounce.qr-intensity-normal { animation: qr-bounce-n 1.2s ease-in-out infinite; }
+.qr-anim-bounce.qr-intensity-strong { animation: qr-bounce-x 1.2s ease-in-out infinite; }
+@keyframes qr-bounce-s { 0%,100%{transform:translateY(0)} 40%{transform:translateY(2px)} 55%{transform:translateY(-4px)} 70%{transform:translateY(0)} }
+@keyframes qr-bounce-n { 0%,100%{transform:translateY(0)} 40%{transform:translateY(4px)} 55%{transform:translateY(-8px)} 70%{transform:translateY(0)} }
+@keyframes qr-bounce-x { 0%,100%{transform:translateY(0)} 40%{transform:translateY(7px)} 55%{transform:translateY(-14px)} 70%{transform:translateY(0)} }
 
-.qr-anim-scan {
-  position: relative;
-  overflow: hidden;
-}
+/* --- Spin --- */
+@keyframes qr-spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+.qr-anim-spin { animation: qr-spin 3s linear infinite; }
 
+/* --- Float --- */
+.qr-anim-float.qr-intensity-subtle { animation: qr-float-s 3s ease-in-out infinite; }
+.qr-anim-float.qr-intensity-normal { animation: qr-float-n 3s ease-in-out infinite; }
+.qr-anim-float.qr-intensity-strong { animation: qr-float-x 3s ease-in-out infinite; }
+@keyframes qr-float-s { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+@keyframes qr-float-n { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes qr-float-x { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-11px)} }
+
+/* --- Fade --- */
+.qr-anim-fade.qr-intensity-subtle { animation: qr-fade-s 2.5s ease-in-out infinite; }
+.qr-anim-fade.qr-intensity-normal { animation: qr-fade-n 2.5s ease-in-out infinite; }
+.qr-anim-fade.qr-intensity-strong { animation: qr-fade-x 2.5s ease-in-out infinite; }
+@keyframes qr-fade-s { 0%,100%{opacity:1} 50%{opacity:0.7} }
+@keyframes qr-fade-n { 0%,100%{opacity:1} 50%{opacity:0.4} }
+@keyframes qr-fade-x { 0%,100%{opacity:1} 50%{opacity:0.1} }
+
+/* --- Shake --- */
+.qr-anim-shake.qr-intensity-subtle { animation: qr-shake-s 0.8s ease-in-out infinite; }
+.qr-anim-shake.qr-intensity-normal { animation: qr-shake-n 0.8s ease-in-out infinite; }
+.qr-anim-shake.qr-intensity-strong { animation: qr-shake-x 0.8s ease-in-out infinite; }
+@keyframes qr-shake-s { 0%,50%,100%{transform:translateX(0)} 10%{transform:translateX(-1.5px)} 20%{transform:translateX(1.5px)} 30%{transform:translateX(-1.5px)} 40%{transform:translateX(1.5px)} }
+@keyframes qr-shake-n { 0%,50%,100%{transform:translateX(0)} 10%{transform:translateX(-3px)} 20%{transform:translateX(3px)} 30%{transform:translateX(-3px)} 40%{transform:translateX(3px)} }
+@keyframes qr-shake-x { 0%,50%,100%{transform:translateX(0)} 10%{transform:translateX(-5px)} 20%{transform:translateX(5px)} 30%{transform:translateX(-5px)} 40%{transform:translateX(5px)} }
+
+/* --- Scan --- */
+@keyframes qr-scan-line { 0%{top:0} 100%{top:calc(100% - 2px)} }
+.qr-anim-scan { position:relative; overflow:hidden; }
 .qr-anim-scan::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: currentColor;
-  opacity: 0.5;
-  box-shadow: 0 0 8px currentColor;
+  content:''; position:absolute; left:0; right:0;
+  background:currentColor; pointer-events:none; z-index:2;
   animation: qr-scan-line 2s linear infinite;
-  z-index: 2;
-  pointer-events: none;
+}
+.qr-anim-scan.qr-intensity-subtle::after { height:1px; opacity:0.3; }
+.qr-anim-scan.qr-intensity-normal::after { height:2px; opacity:0.5; box-shadow:0 0 8px currentColor; }
+.qr-anim-scan.qr-intensity-strong::after { height:3px; opacity:0.7; box-shadow:0 0 14px currentColor; }
+
+/* --- Glitch --- */
+.qr-anim-glitch.qr-intensity-subtle { animation: qr-glitch-s 5s ease-in-out infinite; }
+.qr-anim-glitch.qr-intensity-normal { animation: qr-glitch-n 5s ease-in-out infinite; }
+.qr-anim-glitch.qr-intensity-strong { animation: qr-glitch-x 5s ease-in-out infinite; }
+@keyframes qr-glitch-s {
+  0%,84%,90%,100%{transform:translate(0);filter:none}
+  85%{transform:translate(-1.5px,0.5px) skewX(0.25deg);filter:hue-rotate(45deg)}
+  86%{transform:translate(1.5px,-0.5px)} 87%{transform:translate(0);filter:none}
+}
+@keyframes qr-glitch-n {
+  0%,84%,90%,100%{transform:translate(0);filter:none}
+  85%{transform:translate(-3px,1px) skewX(0.5deg);filter:hue-rotate(90deg)}
+  86%{transform:translate(3px,-1px);filter:hue-rotate(-90deg)}
+  87%{transform:translate(-1px,2px) skewX(-0.3deg)} 88%{transform:translate(0);filter:none}
+  91%{transform:translate(2px,-2px);filter:hue-rotate(45deg) brightness(1.1)}
+  92%{transform:translate(-2px,1px) skewX(0.2deg)} 93%{transform:translate(0);filter:none}
+}
+@keyframes qr-glitch-x {
+  0%,82%,90%,100%{transform:translate(0);filter:none}
+  83%{transform:translate(-5px,2px) skewX(1deg);filter:hue-rotate(120deg)}
+  84%{transform:translate(5px,-2px) skewX(-1deg);filter:hue-rotate(-120deg) brightness(1.3)}
+  85%{transform:translate(-3px,4px) skewX(0.5deg)}
+  86%{transform:translate(4px,-1px);filter:hue-rotate(180deg)}
+  87%{transform:translate(0);filter:none}
+  91%{transform:translate(3px,-3px) skewX(-0.8deg);filter:hue-rotate(90deg) brightness(1.2)}
+  92%{transform:translate(-4px,2px) skewX(0.6deg)} 93%{transform:translate(0);filter:none}
 }
 
-.qr-anim-glitch {
-  animation: qr-glitch 5s ease-in-out infinite;
-}
+/* Speed overrides — multiply animation-duration */
+.qr-speed-slow { animation-duration: calc(var(--base-dur, 1s) * 2) !important; }
+.qr-speed-fast { animation-duration: calc(var(--base-dur, 1s) * 0.5) !important; }
+
+/* Speed classes applied via longer/shorter durations */
+.qr-speed-slow.qr-anim-pulse { animation-duration: 5s !important; }
+.qr-speed-fast.qr-anim-pulse { animation-duration: 1.25s !important; }
+.qr-speed-slow.qr-anim-bounce { animation-duration: 2.4s !important; }
+.qr-speed-fast.qr-anim-bounce { animation-duration: 0.6s !important; }
+.qr-speed-slow.qr-anim-spin { animation-duration: 6s !important; }
+.qr-speed-fast.qr-anim-spin { animation-duration: 1.5s !important; }
+.qr-speed-slow.qr-anim-float { animation-duration: 6s !important; }
+.qr-speed-fast.qr-anim-float { animation-duration: 1.5s !important; }
+.qr-speed-slow.qr-anim-fade { animation-duration: 5s !important; }
+.qr-speed-fast.qr-anim-fade { animation-duration: 1.25s !important; }
+.qr-speed-slow.qr-anim-shake { animation-duration: 1.6s !important; }
+.qr-speed-fast.qr-anim-shake { animation-duration: 0.4s !important; }
+.qr-speed-slow.qr-anim-scan::after { animation-duration: 4s !important; }
+.qr-speed-fast.qr-anim-scan::after { animation-duration: 1s !important; }
+.qr-speed-slow.qr-anim-glitch { animation-duration: 10s !important; }
+.qr-speed-fast.qr-anim-glitch { animation-duration: 2.5s !important; }
 
 /* Mobile-first responsive layout */
 @media (max-width: 768px) {

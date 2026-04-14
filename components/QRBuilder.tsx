@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from "react";
 
 type DotType = "rounded" | "dots" | "classy" | "classy-rounded" | "square" | "extra-rounded";
 type CornerType = "square" | "extra-rounded" | "dot";
-type AnimationType = "none" | "pulse" | "scan" | "glitch";
+type AnimationType = "none" | "pulse" | "scan" | "glitch" | "bounce" | "spin" | "fade" | "float" | "shake";
+type AnimSpeed = "slow" | "normal" | "fast";
+type AnimIntensity = "subtle" | "normal" | "strong";
 
 interface QROptions {
   dotType: DotType;
@@ -13,6 +15,8 @@ interface QROptions {
   bgColor: string;
   logoUrl: string;
   animation: AnimationType;
+  animSpeed: AnimSpeed;
+  animIntensity: AnimIntensity;
 }
 
 const DOT_STYLES: { label: string; value: DotType }[] = [
@@ -33,8 +37,25 @@ const CORNER_STYLES: { label: string; value: CornerType }[] = [
 const ANIMATIONS: { label: string; value: AnimationType }[] = [
   { label: "None", value: "none" },
   { label: "Pulse", value: "pulse" },
+  { label: "Bounce", value: "bounce" },
+  { label: "Spin", value: "spin" },
+  { label: "Float", value: "float" },
+  { label: "Fade", value: "fade" },
+  { label: "Shake", value: "shake" },
   { label: "Scan", value: "scan" },
   { label: "Glitch", value: "glitch" },
+];
+
+const ANIM_SPEEDS: { label: string; value: AnimSpeed }[] = [
+  { label: "Slow", value: "slow" },
+  { label: "Normal", value: "normal" },
+  { label: "Fast", value: "fast" },
+];
+
+const ANIM_INTENSITIES: { label: string; value: AnimIntensity }[] = [
+  { label: "Subtle", value: "subtle" },
+  { label: "Normal", value: "normal" },
+  { label: "Strong", value: "strong" },
 ];
 
 const PRESETS = [
@@ -67,6 +88,8 @@ export default function QRBuilder() {
     bgColor: "#fafaf8",
     logoUrl: "",
     animation: "none",
+    animSpeed: "normal",
+    animIntensity: "normal",
   });
 
   // Build qr-code-styling options
@@ -159,13 +182,41 @@ export default function QRBuilder() {
       while (clone.childNodes.length > 0) g.appendChild(clone.childNodes[0]);
       clone.appendChild(g);
 
+      const speedMap = { slow: 2, normal: 1, fast: 0.5 };
+      const intensityMap = { subtle: 0.5, normal: 1, strong: 1.8 };
+      const sp = speedMap[opts.animSpeed];
+      const it = intensityMap[opts.animIntensity];
+
       let css = "";
       switch (opts.animation) {
-        case "pulse":
-          css = `@keyframes p{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}g{animation:p 2.5s ease-in-out infinite;transform-origin:50% 50%;}`;
+        case "pulse": {
+          const s = 1 + 0.04 * it;
+          css = `@keyframes p{0%,100%{transform:scale(1)}50%{transform:scale(${s})}}g{animation:p ${2.5*sp}s ease-in-out infinite;transform-origin:50% 50%;}`;
           break;
+        }
+        case "bounce": {
+          const s = 1 + 0.08 * it;
+          css = `@keyframes b{0%,100%{transform:scale(1) translateY(0)}40%{transform:scale(1,${1-0.04*it}) translateY(${4*it}px)}55%{transform:scale(${s}) translateY(${-8*it}px)}70%{transform:scale(1) translateY(0)}}g{animation:b ${1.2*sp}s ease-in-out infinite;transform-origin:50% 100%;}`;
+          break;
+        }
+        case "spin":
+          css = `@keyframes sp{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}g{animation:sp ${3*sp}s linear infinite;transform-origin:50% 50%;}`;
+          break;
+        case "float": {
+          const d = 6 * it;
+          css = `@keyframes f{0%,100%{transform:translateY(0)}50%{transform:translateY(${-d}px)}}g{animation:f ${3*sp}s ease-in-out infinite;transform-origin:50% 50%;}`;
+          break;
+        }
+        case "fade":
+          css = `@keyframes fa{0%,100%{opacity:1}50%{opacity:${Math.max(0.1,1-0.6*it)}}}g{animation:fa ${2.5*sp}s ease-in-out infinite;}`;
+          break;
+        case "shake": {
+          const d = 3 * it;
+          css = `@keyframes sh{0%,100%{transform:translateX(0)}10%{transform:translateX(${-d}px)}20%{transform:translateX(${d}px)}30%{transform:translateX(${-d}px)}40%{transform:translateX(${d}px)}50%{transform:translateX(0)}}g{animation:sh ${0.8*sp}s ease-in-out infinite;transform-origin:50% 50%;}`;
+          break;
+        }
         case "scan": {
-          css = `@keyframes s{0%{transform:translateY(-3px)}100%{transform:translateY(300px)}}line.scan{animation:s 2s linear infinite;}`;
+          css = `@keyframes s{0%{transform:translateY(-3px)}100%{transform:translateY(300px)}}line.scan{animation:s ${2*sp}s linear infinite;}`;
           const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
           line.setAttribute("class", "scan");
           line.setAttribute("x1", "0");
@@ -173,14 +224,16 @@ export default function QRBuilder() {
           line.setAttribute("x2", "300");
           line.setAttribute("y2", "0");
           line.setAttribute("stroke", opts.fgColor);
-          line.setAttribute("stroke-width", "2");
-          line.setAttribute("opacity", "0.5");
+          line.setAttribute("stroke-width", String(1 + it));
+          line.setAttribute("opacity", String(0.3 + 0.2 * it));
           clone.appendChild(line);
           break;
         }
-        case "glitch":
-          css = `@keyframes gl{0%,84%,90%,100%{transform:translate(0)}85%{transform:translate(-3px,1px) skewX(0.5deg)}86%{transform:translate(3px,-1px)}87%{transform:translate(-1px,2px)}88%{transform:translate(0)}}g{animation:gl 5s ease-in-out infinite;transform-origin:50% 50%;}`;
+        case "glitch": {
+          const d = 3 * it;
+          css = `@keyframes gl{0%,84%,90%,100%{transform:translate(0)}85%{transform:translate(${-d}px,${d*0.3}px) skewX(${0.5*it}deg)}86%{transform:translate(${d}px,${-d*0.3}px)}87%{transform:translate(${-d*0.3}px,${d*0.6}px)}88%{transform:translate(0)}}g{animation:gl ${5*sp}s ease-in-out infinite;transform-origin:50% 50%;}`;
           break;
+        }
       }
 
       if (css) {
@@ -412,13 +465,55 @@ export default function QRBuilder() {
                 </button>
               ))}
             </div>
+            {opts.animation !== "none" && (
+              <div style={{ display: "flex", gap: 24, marginTop: 16, flexWrap: "wrap" }}>
+                <div>
+                  <label style={{ marginBottom: 6 }}>Speed</label>
+                  <div style={styles.chipGrid}>
+                    {ANIM_SPEEDS.map((s) => (
+                      <button
+                        key={s.value}
+                        onClick={() => setOpts((o) => ({ ...o, animSpeed: s.value }))}
+                        style={{
+                          ...styles.chip,
+                          padding: "5px 10px",
+                          fontSize: 10,
+                          ...(opts.animSpeed === s.value ? styles.chipActive : {}),
+                        }}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label style={{ marginBottom: 6 }}>Intensity</label>
+                  <div style={styles.chipGrid}>
+                    {ANIM_INTENSITIES.map((i) => (
+                      <button
+                        key={i.value}
+                        onClick={() => setOpts((o) => ({ ...o, animIntensity: i.value }))}
+                        style={{
+                          ...styles.chip,
+                          padding: "5px 10px",
+                          fontSize: 10,
+                          ...(opts.animIntensity === i.value ? styles.chipActive : {}),
+                        }}
+                      >
+                        {i.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
         </div>
 
         {/* Right — Preview */}
         <div className="qr-preview" style={styles.preview}>
           <div
-            className={opts.animation !== "none" ? `qr-anim-${opts.animation}` : undefined}
+            className={opts.animation !== "none" ? `qr-anim-${opts.animation} qr-speed-${opts.animSpeed} qr-intensity-${opts.animIntensity}` : undefined}
             style={{
               ...styles.qrWrap,
               background: generated ? opts.bgColor : "#f0ede6",
